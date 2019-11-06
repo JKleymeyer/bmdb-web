@@ -24,7 +24,6 @@ public class ActorController {
 
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 		}
 		return jr;
 	}
@@ -37,7 +36,6 @@ public class ActorController {
 			jr = JsonResponse.getInstance(actorRepo.findById(id));
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;
@@ -53,7 +51,6 @@ public class ActorController {
 			jr = JsonResponse.getInstance(dive.getRootCause().getMessage());
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;
@@ -73,7 +70,6 @@ public class ActorController {
 			}
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;
@@ -91,9 +87,10 @@ public class ActorController {
 				// record doesn't exist
 				jr = JsonResponse.getInstance("Error updating actor. Id " + id + " doesn't exist");
 			}
+		} catch (DataIntegrityViolationException dive) {
+			jr = JsonResponse.getInstance(dive.getRootCause().getMessage());
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;

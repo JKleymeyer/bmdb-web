@@ -24,7 +24,6 @@ public class CreditController {
 
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 		}
 		return jr;
 	}
@@ -37,7 +36,6 @@ public class CreditController {
 			jr = JsonResponse.getInstance(creditRepo.findById(id));
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;
@@ -71,9 +69,10 @@ public class CreditController {
 				// record doesn't exist
 				jr = JsonResponse.getInstance("Error updating credit. Id " + c.getId() + " doesn't exist");
 			}
+		} catch (DataIntegrityViolationException dive) {
+			jr = JsonResponse.getInstance(dive.getRootCause().getMessage());
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;
@@ -92,6 +91,7 @@ public class CreditController {
 				jr = JsonResponse.getInstance("Error updating credit. Id " + id + " doesn't exist");
 			}
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e.getMessage());
 
 		}
 		return jr;

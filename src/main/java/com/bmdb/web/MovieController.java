@@ -25,7 +25,6 @@ public class MovieController {
 
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 		}
 		return jr;
 	}
@@ -38,7 +37,6 @@ public class MovieController {
 			jr = JsonResponse.getInstance(movieRepo.findById(id));
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;
@@ -55,8 +53,6 @@ public class MovieController {
 			jr = JsonResponse.getInstance(dive.getRootCause().getMessage());
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
-
 		}
 		return jr;
 
@@ -75,7 +71,6 @@ public class MovieController {
 			}
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;
@@ -93,9 +88,11 @@ public class MovieController {
 				// record doesn't exist
 				jr = JsonResponse.getInstance("Error updating movie. Id " + id + " doesn't exist");
 			}
+		}
+			catch (DataIntegrityViolationException dive) {
+				jr = JsonResponse.getInstance(dive.getRootCause().getMessage());
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e.getMessage());
-			e.printStackTrace();
 
 		}
 		return jr;
