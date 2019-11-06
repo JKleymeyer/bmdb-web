@@ -1,6 +1,7 @@
 package com.bmdb.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
 import com.bmdb.business.Actor;
@@ -8,7 +9,7 @@ import com.bmdb.db.ActorRepository;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/actor")
+@RequestMapping("/actors")
 public class ActorController {
 
 	@Autowired
@@ -22,7 +23,8 @@ public class ActorController {
 			jr = JsonResponse.getInstance(actorRepo.findAll());
 
 		} catch (Exception e) {
-			jr = JsonResponse.getInstance(e);
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 		}
 		return jr;
 	}
@@ -34,6 +36,8 @@ public class ActorController {
 		try {
 			jr = JsonResponse.getInstance(actorRepo.findById(id));
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 
 		}
 		return jr;
@@ -45,7 +49,11 @@ public class ActorController {
 		JsonResponse jr = null;
 		try {
 			jr = JsonResponse.getInstance(actorRepo.save(a));
+		} catch (DataIntegrityViolationException dive) {
+			jr = JsonResponse.getInstance(dive.getRootCause().getMessage());
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 
 		}
 		return jr;
@@ -61,30 +69,34 @@ public class ActorController {
 				jr = JsonResponse.getInstance(actorRepo.save(a));
 			} else {
 				// record doesn't exist
-				jr = JsonResponse.getInstance("Error updating Stuffy. Id " + a.getId() + " doesn't exist");
+				jr = JsonResponse.getInstance("Error updating actor. Id " + a.getId() + " doesn't exist");
 			}
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 
 		}
 		return jr;
 	}
 
-	//Delete an Actor
+	// Delete an Actor
 	@DeleteMapping("/{id}")
 	public JsonResponse deleteActor(@PathVariable int id) {
 		JsonResponse jr = null;
-		try{
+		try {
 			if (actorRepo.existsById(id)) {
 				actorRepo.deleteById(id);
-			jr = JsonResponse.getInstance("Delete successful");
+				jr = JsonResponse.getInstance("Delete successful");
 			} else {
-				//record doesn't exist
-				jr = JsonResponse.getInstance("Error updating Stuffy. Id " +id+ " doesn't exist");
+				// record doesn't exist
+				jr = JsonResponse.getInstance("Error updating actor. Id " + id + " doesn't exist");
 			}
 		} catch (Exception e) {
-			
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
+
 		}
 		return jr;
-		}
-	
+	}
+
 }

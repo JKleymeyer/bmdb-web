@@ -1,6 +1,7 @@
 package com.bmdb.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
 import com.bmdb.business.Movie;
@@ -9,7 +10,7 @@ import com.bmdb.web.JsonResponse;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/movie")
+@RequestMapping("/movies")
 public class MovieController {
 
 	@Autowired
@@ -23,7 +24,8 @@ public class MovieController {
 			jr = JsonResponse.getInstance(movieRepo.findAll());
 
 		} catch (Exception e) {
-			jr = JsonResponse.getInstance(e);
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 		}
 		return jr;
 	}
@@ -35,6 +37,8 @@ public class MovieController {
 		try {
 			jr = JsonResponse.getInstance(movieRepo.findById(id));
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 
 		}
 		return jr;
@@ -47,46 +51,54 @@ public class MovieController {
 		JsonResponse jr = null;
 		try {
 			jr = JsonResponse.getInstance(movieRepo.save(m));
+		} catch (DataIntegrityViolationException dive) {
+			jr = JsonResponse.getInstance(dive.getRootCause().getMessage());
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 
 		}
 		return jr;
 
 	}
 
-	//update a movie
+	// update a movie
 	@PutMapping("/")
 	public JsonResponse updateMovie(@RequestBody Movie m) {
 		JsonResponse jr = null;
-		try{
+		try {
 			if (movieRepo.existsById(m.getId())) {
-			jr = JsonResponse.getInstance(movieRepo.save(m));
+				jr = JsonResponse.getInstance(movieRepo.save(m));
 			} else {
-				//record doesn't exist
-				jr = JsonResponse.getInstance("Error updating Stuffy. Id " +m.getId()+ " doesn't exist");
+				// record doesn't exist
+				jr = JsonResponse.getInstance("Error updating movie. Id " + m.getId() + " doesn't exist");
 			}
 		} catch (Exception e) {
-			
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
+
 		}
 		return jr;
-		}
-	
-	//Delete a movie
+	}
+
+	// Delete a movie
 	@DeleteMapping("/{id}")
 	public JsonResponse deleteMovie(@PathVariable int id) {
 		JsonResponse jr = null;
-		try{
+		try {
 			if (movieRepo.existsById(id)) {
 				movieRepo.deleteById(id);
-			jr = JsonResponse.getInstance("Delete successful");
+				jr = JsonResponse.getInstance("Delete successful");
 			} else {
-				//record doesn't exist
-				jr = JsonResponse.getInstance("Error updating Stuffy. Id " +id+ " doesn't exist");
+				// record doesn't exist
+				jr = JsonResponse.getInstance("Error updating movie. Id " + id + " doesn't exist");
 			}
 		} catch (Exception e) {
-			
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
+
 		}
 		return jr;
-		}
-	
 	}
+
+}

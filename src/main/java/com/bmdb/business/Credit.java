@@ -7,19 +7,23 @@ public class Credit {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private int movieID;
-	private int actorID;
+	@ManyToOne
+	@JoinColumn(name="MovieId")
+	private Movie movie;
+	@ManyToOne
+	@JoinColumn(name="ActorId")
+	private Actor actor;
 	private String role;
 	
 	public Credit() {
 		super();
 	}
 
-	public Credit(int id, int movieID, int actorID, String role) {
+	public Credit(int id, Movie movie, Actor actor, String role) {
 		super();
 		this.id = id;
-		this.movieID = movieID;
-		this.actorID = actorID;
+		this.movie = movie;
+		this.actor = actor;
 		this.role = role;
 	}
 
@@ -31,20 +35,20 @@ public class Credit {
 		this.id = id;
 	}
 
-	public int getMovieID() {
-		return movieID;
+	public Movie getMovie() {
+		return movie;
 	}
 
-	public void setMovieID(int movieID) {
-		this.movieID = movieID;
+	public void setMovie(Movie movie) {
+		this.movie = movie;
 	}
 
-	public int getActorID() {
-		return actorID;
+	public Actor getActor() {
+		return actor;
 	}
 
-	public void setActorID(int actorID) {
-		this.actorID = actorID;
+	public void setActor(Actor actor) {
+		this.actor = actor;
 	}
 
 	public String getRole() {
@@ -57,7 +61,7 @@ public class Credit {
 
 	@Override
 	public String toString() {
-		return "Credit [id=" + id + ", movieID=" + movieID + ", actorID=" + actorID + ", role=" + role + "]";
+		return "Credit [id=" + id + ", movie=" + movie + ", actor=" + actor + ", role=" + role + "]";
 	}
 
 }

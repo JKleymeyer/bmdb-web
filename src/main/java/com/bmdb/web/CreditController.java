@@ -1,6 +1,7 @@
 package com.bmdb.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
 import com.bmdb.business.Credit;
@@ -8,7 +9,7 @@ import com.bmdb.db.CreditRepository;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/credit")
+@RequestMapping("/credits")
 public class CreditController {
 
 	@Autowired
@@ -22,7 +23,8 @@ public class CreditController {
 			jr = JsonResponse.getInstance(creditRepo.findAll());
 
 		} catch (Exception e) {
-			jr = JsonResponse.getInstance(e);
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 		}
 		return jr;
 	}
@@ -34,6 +36,8 @@ public class CreditController {
 		try {
 			jr = JsonResponse.getInstance(creditRepo.findById(id));
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 
 		}
 		return jr;
@@ -45,14 +49,18 @@ public class CreditController {
 		JsonResponse jr = null;
 		try {
 			jr = JsonResponse.getInstance(creditRepo.save(c));
+		} catch (DataIntegrityViolationException dive) {
+			jr = JsonResponse.getInstance(dive.getRootCause().getMessage());
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e);
+			e.printStackTrace();
 
 		}
 		return jr;
 
 	}
 
-	// update an Actor
+	// update a credit
 	@PutMapping("/")
 	public JsonResponse updateCredit(@RequestBody Credit c) {
 		JsonResponse jr = null;
@@ -61,15 +69,17 @@ public class CreditController {
 				jr = JsonResponse.getInstance(creditRepo.save(c));
 			} else {
 				// record doesn't exist
-				jr = JsonResponse.getInstance("Error updating Stuffy. Id " + c.getId() + " doesn't exist");
+				jr = JsonResponse.getInstance("Error updating credit. Id " + c.getId() + " doesn't exist");
 			}
 		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e.getMessage());
+			e.printStackTrace();
 
 		}
 		return jr;
 	}
 
-	// Delete an Actor
+	// Delete a credit
 	@DeleteMapping("/{id}")
 	public JsonResponse deleteCredit(@PathVariable int id) {
 		JsonResponse jr = null;
@@ -79,7 +89,7 @@ public class CreditController {
 				jr = JsonResponse.getInstance("Delete successful");
 			} else {
 				// record doesn't exist
-				jr = JsonResponse.getInstance("Error updating Stuffy. Id " + id + " doesn't exist");
+				jr = JsonResponse.getInstance("Error updating credit. Id " + id + " doesn't exist");
 			}
 		} catch (Exception e) {
 
